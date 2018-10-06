@@ -1,8 +1,12 @@
-run: build go-timeservice
-	./go-timeservice
+TAG?=$(shell git rev-list HEAD --max-count=1 --abbrev-commit)
+export TAG
 
-build: clean
-	go build
+run: clean build
+	./timeservice
 
+build: main.go service.go
+	go build -ldflags "-X main.version=$(TAG)" -o timeservice main.go service.go
+
+.PHONY: clean
 clean:
 	go clean -i
