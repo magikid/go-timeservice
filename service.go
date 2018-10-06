@@ -12,7 +12,8 @@ type TimeRequest struct {
 }
 
 type TimeResponse struct {
-	response string
+	Time     string
+	Timezone string
 }
 
 func timeResponse(t TimeRequest) TimeResponse {
@@ -33,10 +34,10 @@ func timeResponse(t TimeRequest) TimeResponse {
 		timeString = timeWithLoc.Format(time.UnixDate)
 	}
 
-	response := TimeResponse{response: timeString}
+	response := TimeResponse{timeString, timeLocation.String()}
 	return response
 }
 
 func (tr TimeResponse) String() string {
-	return tr.response
+	return fmt.Sprintf("%s, %s", tr.Time, tr.Timezone)
 }

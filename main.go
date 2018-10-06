@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -11,7 +12,8 @@ func main() {
 	port := ":8080"
 
 	pingHandler := func(w http.ResponseWriter, req *http.Request) {
-		_, _ = io.WriteString(w, "Pong\n")
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = io.WriteString(w, "{\"ping\": \"pong\"}")
 	}
 
 	timeHandler := func(w http.ResponseWriter, req *http.Request) {
@@ -19,8 +21,10 @@ func main() {
 		timezone := queryParams.Get("timezone")
 		format := queryParams.Get("format")
 		timeRequest := TimeRequest{format: format, timezone: timezone}
+		response := timeResponse(timeRequest)
 
-		_, _ = io.WriteString(w, timeResponse(timeRequest).String())
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(response)
 	}
 
 	http.HandleFunc("/ping", pingHandler)
