@@ -1,14 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: timeservice
-  labels:
-    app: timeservice
+  name: timeservice-deployment
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: timeservice
+  replicas: 1
   template:
     metadata:
       labels:
@@ -22,14 +20,15 @@ spec:
 
 ---
 
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  name: timeservice
+  name: timeservice-service
 spec:
+  type: LoadBalancer
   selector:
     app: timeservice
   ports:
   - protocol: TCP
-    port: 8080
-    targetPort: 8080
+    port: 80 # External port that is mapped to pod port
+    targetPort: 8080 # Port from the pod
